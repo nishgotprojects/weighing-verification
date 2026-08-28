@@ -1,0 +1,27 @@
+# Secrets and local configuration
+.env
+.env.*
+backend/serviceAccountKey.json
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Flutter and IDE-generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+owner_app/.packages
+owner_app/build/
+owner_app/.idea/
+owner_app/*.iml
+
+# Platform build output
+**/build/
+**/.last_build_id
+
+# Local OS files
+.DS_Store
+Thumbs.db
