@@ -3,12 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import firebase_admin
 from firebase_admin import credentials, firestore
-from groq import Groq
+from google import genai
+from google.genai import types
+import base64
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -26,11 +28,6 @@ app.add_middleware(
 @app.get("/")
 def home():
     return {"message": "Backend is alive"}
-
-@app.get("/list-models")
-def list_models():
-    models = groq_client.models.list()
-    return {"models": [m.id for m in models.data]}
 
 @app.get("/test-firebase")
 def test_firebase():
@@ -58,25 +55,15 @@ TAMPER_SIGNS: <YES or NO>
 REASON: <one short sentence>
 """
 
-    completion = groq_client.chat.completions.create(
-        model="meta-llama/llama-4-scout-17b-16e-instruct",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": f"data:image/jpeg;base64,{req.image_base64}"},
-                    },
-                ],
-            }
-        ],
-        temperature=0.2,
-        max_tokens=300,
+    image_bytes = base64.b64decode(req.image_base64)
+    image_part = types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")
+
+    response = gemini_client.models.generate_content(
+        model="gemini-3.6-flash",
+        contents=[prompt, image_part],
     )
 
-    text = completion.choices[0].message.content.strip()
+    text = response.text.strip()
     flagged = "MATCH: NO" in text or "TAMPER_SIGNS: YES" in text
 
     return {

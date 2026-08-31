@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'passport_screen.dart';
 
 class StatusScreen extends StatelessWidget {
   const StatusScreen({super.key});
@@ -58,7 +59,7 @@ class StatusScreen extends StatelessWidget {
                                 ? Colors.red.shade100
                                 : Colors.orange.shade100,
                       ),
-                      if (isApproved) ...[
+                                            if (isApproved) ...[
                         const SizedBox(height: 16),
                         const Text('Certificate QR Code:'),
                         const SizedBox(height: 8),
@@ -67,6 +68,22 @@ class StatusScreen extends StatelessWidget {
                           size: 150,
                         ),
                       ],
+                      const SizedBox(height: 12),
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PassportScreen(
+                                applicationId: doc.id,
+                                instrumentName: data['instrumentName'] ?? 'Unnamed',
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.history),
+                        label: const Text('View Passport / History'),
+                      ),
                     ],
                   ),
                 ),

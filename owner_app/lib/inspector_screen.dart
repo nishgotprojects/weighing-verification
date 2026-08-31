@@ -4,11 +4,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class InspectorScreen extends StatelessWidget {
   const InspectorScreen({super.key});
 
-  Future<void> _updateStatus(String docId, String newStatus) async {
+    Future<void> _updateStatus(String docId, String newStatus) async {
     await FirebaseFirestore.instance
         .collection('applications')
         .doc(docId)
         .update({'status': newStatus});
+
+    await FirebaseFirestore.instance
+        .collection('applications')
+        .doc(docId)
+        .collection('history')
+        .add({
+      'event': newStatus,
+      'details': newStatus == 'approved'
+          ? 'Application approved by inspector'
+          : 'Application rejected by inspector',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 
   @override

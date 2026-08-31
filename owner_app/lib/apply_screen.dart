@@ -68,7 +68,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
       final aiResult = jsonDecode(aiResponse.body);
 
       final user = FirebaseAuth.instance.currentUser;
-      await FirebaseFirestore.instance.collection('applications').add({
+      final docRef = await FirebaseFirestore.instance.collection('applications').add({
         'ownerEmail': user?.email,
         'ownerId': user?.uid,
         'instrumentName': _instrumentNameController.text.trim(),
@@ -79,6 +79,20 @@ class _ApplyScreenState extends State<ApplyScreen> {
         'aiFlagged': aiResult['flagged'] ?? false,
         'aiRawResult': aiResult['raw_result'] ?? '',
         'submittedAt': FieldValue.serverTimestamp(),
+      });
+
+      await docRef.collection('history').add({
+        'event': 'submitted',
+        'details': 'Application submitted for verification',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      await docRef.collection('history').add({
+        'event': 'ai_checked',
+        'details': (aiResult['flagged'] ?? false)
+            ? 'AI check flagged this instrument for review'
+            : 'AI check passed with no issues',
+        'timestamp': FieldValue.serverTimestamp(),
       });
 
       setState(() {

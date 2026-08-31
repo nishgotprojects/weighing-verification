@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'apply_screen.dart';
 import 'status_screen.dart';
 import 'inspector_screen.dart';
+import 'offline_verification_screen.dart';
+import 'gis_allocation_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -48,7 +50,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 30),
             const Divider(),
             const SizedBox(height: 12),
-            OutlinedButton(
+                        OutlinedButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -56,6 +58,28 @@ class HomeScreen extends StatelessWidget {
                 );
               },
               child: const Text('Inspector View (demo)'),
+            ),
+                        const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OfflineVerificationScreen()),
+                );
+              },
+              child: const Text('Offline Field Verification (demo)'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GisAllocationScreen()),
+                );
+              },
+              child: const Text('GIS Smart Officer Allocation (demo)'),
             ),
           ],
         ),
