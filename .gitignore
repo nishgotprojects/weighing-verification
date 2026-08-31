@@ -25,3 +25,12 @@ owner_app/*.iml
 # Local OS files
 .DS_Store
 Thumbs.db
+
+# Node/Vite project metadata (if present)
+node_modules/
+dist/
+dist-ssr/
+*.local
+!.env.example
+.vscode/*
+!.vscode/extensions.json
